@@ -16,7 +16,13 @@ class ReadCSV_Waypoint_List():
         rospy.init_node('waypoint_manager')
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.move_base_current_goal_callback)
-        self.Publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal)
+        self.Publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size=1)
+        
+        #Init the waypoint_lis.py
+        self.WPL = ReadCSV()        
+        self.set_goal({'a':1})
+
+
         rospy.spin()
         
     # Callback function for the 'move_base/current_goal' topic
@@ -26,9 +32,10 @@ class ReadCSV_Waypoint_List():
 
     # Callback function for the 'move_base/result' topic
     def set_goal(self, goal:dict):
-        
-        self.current_goal = msg.pose.position
-        print(f"{str(msg)}")
+        rospy.loginfo(self.WPL.get_row(row=1))
+        # self.current_goal = msg.pose.position
+        # print(f"{str(msg)}")
+
 
 if __name__ == '__main__':
     try:
