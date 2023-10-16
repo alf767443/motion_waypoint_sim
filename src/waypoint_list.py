@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 # Import library
-import rospy
+import rospy, os
 import pandas as pd
 
 # Import the waypoint_list.csv.
 class ReadCSV():
     # Init the ros node
-    def __init__(self, file_path='waypoint_list.csv'):
+    def __init__(self, file_path=os.path.dirname(os.path.abspath(__file__))+'/waypoint_list.csv'):
         rospy.init_node('waypoint_list')
         rospy.loginfo('Initing the waypoint read from: ' + file_path)
         # Define the file path
