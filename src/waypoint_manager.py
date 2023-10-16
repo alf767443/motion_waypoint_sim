@@ -44,7 +44,6 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
-
     # Get goal from list with the wp_list class
     def get_goal_from_list(self, order:int):
         try:
@@ -67,26 +66,24 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
         
-
+    # Create a new goal from a goal dict
     def new_goal(self, goal:dict):
-        # Convert goal to MoveBaseActionGoal
-        goal_msg = self.pose_csv_dict2msg(input=goal)
-        self.send_goal2topic(goal=goal_msg)
-        print(f"New goal to {goal}")
-
+        try:
+            rospy.logdebug(f"Creating a new goal from a dict")
+            # Convert goal to MoveBaseActionGoal
+            goal_msg = self.pose_csv_dict2msg(input=goal)
+            # Send goal to the /move_base/goal topic
+            self.send_goal2topic(goal=goal_msg)
+        except Exception as e:
+            rospy.logerr(f"An error occurs on create a new goal")
+            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
+            return False
 
         
     # Callback function for the 'move_base/current_goal' topic
     def move_base_current_goal_callback(self, msg):
         self.current_goal = msg.pose.position
         print(f"{str(msg)}")
-
-    
-
-        # self.current_goal = msg.pose.position
-        # print(f"{str(msg)}")
-
-    
 
 
 if __name__ == '__main__':
