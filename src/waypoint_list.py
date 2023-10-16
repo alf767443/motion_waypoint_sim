@@ -14,7 +14,6 @@ class ReadCSV():
         # Read the csv file
         self.read_csv()
         #Keep node alive
-        rospy.spin()
     # Read the csv file
     def read_csv(self):
         try:
@@ -37,10 +36,3 @@ class ReadCSV():
             rospy.logerr(f"Error to get the row {str(row)}")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
-
-if __name__ == '__main__':
-    try:
-        # Run the node and keep it running
-        ReadCSV()
-    except rospy.ROSInterruptException:
-        pass
