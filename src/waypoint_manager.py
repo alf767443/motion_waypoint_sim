@@ -16,25 +16,77 @@ class ReadCSV_Waypoint_List():
         rospy.init_node('waypoint_manager')
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.move_base_current_goal_callback)
-        self.Publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size=1)
+        self.publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size=1)
         
-        #Init the waypoint_lis.py
-        self.WPL = ReadCSV()        
-        self.set_goal({'a':1})
-
+        #Read the csv waypoint_list
+        self.wp_list = ReadCSV() 
+        
+        self.new_goal(self.get_goal_from_list(order=1))
 
         rospy.spin()
+
+    # This function converts the csv dictionary into a MoveBaseActionGoal message
+    def pose_csv_dict2msg(self, input:dict):
+        try:
+            rospy.logdebug(f"Try to convert the dict\n{str(input)}\nto a MoveBaseActionGoal message")
+            # Create the MoveBaseActionGoal message
+            output = MoveBaseActionGoal()
+            output.goal.target_pose = PoseStamped()
+            # Target frame of reference, by default are 'map'
+            output.goal.target_pose.header.frame_id = "map"
+            # Coordinates of the target position (x, y, z)
+            output.goal.target_pose.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
+            # Orientation (quaternion) of the target position (x, y, z, w)
+            output.goal.target_pose.pose.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
+            return output
+        except Exception as e:
+            rospy.logerr(f"Erro on the dict convert to MoveBaseActionGoal goal")
+            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
+            return False
+
+
+    # Get goal from list with the wp_list class
+    def get_goal_from_list(self, order:int):
+        try:
+            rospy.logdebug(f"Getting the goal {str(order)}\n from the csv list")
+            # Get the goal from list
+            goal_dict = self.wp_list.get_row(order)
+            return goal_dict
+        except Exception as e:
+            rospy.logerr(f"Error on get item {str(order)} from the csv list")
+            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
+            return False
+    
+    # Send a goal to the topic /move_base/goal
+    def send_goal2topic(self, goal:type):
+        try:
+            rospy.logdebug(f"Publishing to the publisher_move_base_goal a new goal")
+            # Try to send goal to the /move_base/goal
+            self.publisher_move_base_goal.publish(goal)
+        except Exception as e:
+            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
+            return False
+        
+
+    def new_goal(self, goal:dict):
+        # Convert goal to MoveBaseActionGoal
+        goal_msg = self.pose_csv_dict2msg(input=goal)
+        self.send_goal2topic(goal=goal_msg)
+        print(f"New goal to {goal}")
+
+
         
     # Callback function for the 'move_base/current_goal' topic
     def move_base_current_goal_callback(self, msg):
         self.current_goal = msg.pose.position
         print(f"{str(msg)}")
 
-    # Callback function for the 'move_base/result' topic
-    def set_goal(self, goal:dict):
-        rospy.loginfo(self.WPL.get_row(row=1))
+    
+
         # self.current_goal = msg.pose.position
         # print(f"{str(msg)}")
+
+    
 
 
 if __name__ == '__main__':
