@@ -8,7 +8,6 @@ import pandas as pd
 class ReadCSV():
     # Init the ros node
     def __init__(self, file_path=os.path.dirname(os.path.abspath(__file__))+'/waypoint_list.csv'):
-        rospy.init_node('waypoint_list')
         rospy.loginfo('Initing the waypoint read from: ' + file_path)
         # Define the file path
         self.file_path = file_path
@@ -20,7 +19,8 @@ class ReadCSV():
     def read_csv(self):
         try:
             self.df = pd.read_csv(self.file_path)
-            rospy.loginfo(f"Imported csv with:\n {str(self.df.info())}")
+            info = str(self.df.describe())
+            rospy.loginfo(f"Imported csv with the description:\n{info}")
             return True
         except Exception as e:
             rospy.logerr(f"Error reading the CSV file: {str(e)}")
