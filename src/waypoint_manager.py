@@ -98,9 +98,7 @@ class ReadCSV_Waypoint_List():
                     rospy.logwarn(f"Timeout of response /move_base/current_goal")
                     continue
                 # Try again handle
-                finally:
-                    rospy.loginfo(f"Trying to send the goal again\t{n_try}/{max_try}")
-                    continue
+                rospy.loginfo(f"Trying to send the goal again\t{n_try}/{max_try}")
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
         finally:
