@@ -26,6 +26,7 @@ class ReadCSV_Waypoint_List():
         # Global variables
         self.goal_received = False
         
+        
         self.new_goal(self.get_goal_from_list(order=1))
 
         rospy.spin()
@@ -66,8 +67,6 @@ class ReadCSV_Waypoint_List():
             rospy.logdebug(f"Publishing to the publisher_move_base_goal a new goal")
             # Try to send goal to the /move_base/goal
             self.publisher_move_base_goal.publish(goal)
-            print(goal)
-            
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
