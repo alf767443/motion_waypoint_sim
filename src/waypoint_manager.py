@@ -73,25 +73,39 @@ class ReadCSV_Waypoint_List():
             return False
         
     # Create a new goal from a goal dict
-    def new_goal(self, goal:dict):
+    def new_goal(self, goal:dict, max_try=10):
         try:
             self.goal_received = False
             # Try for a max of 10 times send the goal
-            for n_try in range(10):
+            for n_try in range(1,max_try):
                 rospy.logdebug(f"Creating a new goal from a dict")
                 # Convert goal to MoveBaseActionGoal
                 goal_msg = self.pose_csv_dict2msg(input=goal)
                 # Send goal to the /move_base/goal topic
                 self.send_goal2topic(goal=goal_msg)
-                msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=0.5)
-                if goal_msg.pose == msg.pose:
-                    rospy.loginfo(f"A new goal is define to \n {str(goal)}")
-                    return True
+                try:
+                    # Wait for the response goal
+                    msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=0.5)
+                    # Check if the goal is correct
+                    if goal_msg.pose == msg.pose:
+                        rospy.loginfo(f"A new goal is define to \n {str(goal)}")
+                        return True
+                    # Not same goal handle
+                    else:
+                        rospy.logwarn(f"The goal responded to isn't the one submitted")
+                # Timeout handle
+                except rospy.exceptions.ROSInterruptException as e:
+                    rospy.logwarn(f"Timeout of response /move_base/current_goal")
+                    continue
+                # Try again handle
+                finally:
+                    rospy.loginfo(f"Trying to send the goal again\t{n_try}/{max_try}")
+                    continue
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
-            return False
         finally:
             rospy.logerr(f"An error occurs on create a new goal")
+            return False
 
         
     # Callback function for the 'move_base/current_goal' topic
