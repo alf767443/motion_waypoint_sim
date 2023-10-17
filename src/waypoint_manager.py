@@ -17,7 +17,7 @@ class ReadCSV_Waypoint_List():
         rospy.init_node('waypoint_manager')
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.move_base_current_goal_callback)
-        self.publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size=10)
+        self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
         
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
@@ -31,16 +31,13 @@ class ReadCSV_Waypoint_List():
         try:
             rospy.logdebug(f"Try to convert the dict\n{str(input)}\nto a MoveBaseActionGoal message")
             # Create the MoveBaseActionGoal message
-            output = MoveBaseActionGoal()
-            output.goal = MoveBaseGoal()
-            output.goal.target_pose = PoseStamped()
-            output.goal.target_pose.header = Header()
+            output = PoseStamped()
             # Preencha o campo 'header' do objetivo
-            output.goal.target_pose.header.frame_id = "map"
+            output.header.frame_id = 'map'
             # Coordinates of the target position (x, y, z)
-            output.goal.target_pose.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
+            output.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
             # Orientation (quaternion) of the target position (x, y, z, w)
-            output.goal.target_pose.pose.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
+            output.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
             return output
         except Exception as e:
             rospy.logerr(f"Erro on the dict convert to MoveBaseActionGoal goal")
