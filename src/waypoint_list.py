@@ -45,7 +45,7 @@ class ReadCSV():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
     # Get the number of waypoints
-    def get_n_row(self)->int:
+    def get_n_rows(self)->int:
         try:
             n_rows = self.df.shape[0]
             rospy.logdebug(f"The list have {n_rows} of waypoiints")
