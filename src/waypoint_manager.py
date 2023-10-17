@@ -111,6 +111,7 @@ class ReadCSV_Waypoint_List():
             try:
                 while True:
                     move_base_status = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
+                    print(move_base_status.status_list.status)
                     if move_base_status.status_list.status == 1:
                         delta_time = move_base_status.header.stamp.secs - move_base_status.status_list.goal_id.stamp.secs
                         if delta_time > max_wait_to_reached:
