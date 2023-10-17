@@ -17,7 +17,7 @@ class ReadCSV_Waypoint_List():
         rospy.init_node('waypoint_manager')
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.move_base_current_goal_callback)
-        self.publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size=1)
+        self.publisher_move_base_goal = rospy.Publisher("/move_base/goal", MoveBaseActionGoal, queue_size=10)
         
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
