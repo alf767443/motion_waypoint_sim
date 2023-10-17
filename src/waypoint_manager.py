@@ -100,10 +100,10 @@ class ReadCSV_Waypoint_List():
                 # Try again handle
                 rospy.loginfo(f"Trying to send the goal again\t{n_try}/{max_try}")
         except Exception as e:
-            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
-        finally:
             rospy.logerr(f"An error occurs on create a new goal")
+            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
+            
 
         
     # Callback function for the 'move_base/current_goal' topic
