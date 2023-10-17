@@ -83,6 +83,7 @@ class ReadCSV_Waypoint_List():
                 try:
                     # Wait for the response goal
                     msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=5)
+                    print(f"{msg}")
                     # Check if the goal is correct
                     if goal_msg.pose == msg.pose:
                         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
@@ -107,11 +108,9 @@ class ReadCSV_Waypoint_List():
             rospy.loginfo(f"Setting the waypoint {wp_n}/{wp_n_rows}")
             wp = self.wp_list.get_row(row=wp_n)
             self.new_goal(goal=wp)
-
             try:
                 while True:
                     move_base_status = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
-                    print(move_base_status.status_list.status)
                     if move_base_status.status_list.status == 1:
                         delta_time = move_base_status.header.stamp.secs - move_base_status.status_list.goal_id.stamp.secs
                         if delta_time > max_wait_to_reached:
