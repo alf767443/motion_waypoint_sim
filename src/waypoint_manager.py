@@ -37,7 +37,7 @@ class ReadCSV_Waypoint_List():
             # Coordinates of the target position (x, y, z)
             output.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
             # Orientation (quaternion) of the target position (x, y, z, w)
-            output.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
+            output.pose.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
             return output
         except Exception as e:
             rospy.logerr(f"Erro on the dict convert to MoveBaseActionGoal goal")
