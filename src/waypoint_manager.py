@@ -85,7 +85,7 @@ class ReadCSV_Waypoint_List():
                 self.send_goal2topic(goal=goal_msg)
                 try:
                     # Wait for the response goal
-                    msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=0.5)
+                    msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=1)
                     # Check if the goal is correct
                     if goal_msg.pose == msg.pose:
                         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
@@ -94,7 +94,7 @@ class ReadCSV_Waypoint_List():
                     else:
                         rospy.logwarn(f"The goal responded to isn't the one submitted")
                 # Timeout handle
-                except rospy.exceptions.ROSInterruptException as e:
+                except rospy.exceptions.ROSException:
                     rospy.logwarn(f"Timeout of response /move_base/current_goal")
                     continue
                 # Try again handle
