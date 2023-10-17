@@ -85,7 +85,7 @@ class ReadCSV_Waypoint_List():
                 self.send_goal2topic(goal=goal_msg)
                 try:
                     # Wait for the response goal
-                    msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=1)
+                    msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=5)
                     # Check if the goal is correct
                     if goal_msg.pose == msg.pose:
                         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
