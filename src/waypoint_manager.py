@@ -9,6 +9,7 @@ from waypoint_list import ReadCSV
 from move_base_msgs.msg import *
 from geometry_msgs.msg import *
 from std_msgs.msg import *
+from actionlib_msgs.msg import *
 
 # Import the waypoint_list.csv and convert.
 class ReadCSV_Waypoint_List():
@@ -23,10 +24,7 @@ class ReadCSV_Waypoint_List():
         
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
-        # Global variables
-        self.goal_received = False
-        
-        
+
         self.new_goal(self.get_goal_from_list(order=1))
 
         rospy.spin()
@@ -74,9 +72,9 @@ class ReadCSV_Waypoint_List():
     # Create a new goal from a goal dict
     def new_goal(self, goal:dict, max_try=10):
         try:
-            self.goal_received = False
             # Try for a max of 10 times send the goal
             for n_try in range(1,max_try):
+                rospy.loginfo(f"Trying to send the goal\t{n_try}/{max_try}")
                 rospy.logdebug(f"Creating a new goal from a dict")
                 # Convert goal to MoveBaseActionGoal
                 goal_msg = self.pose_csv_dict2msg(input=goal)
@@ -96,13 +94,41 @@ class ReadCSV_Waypoint_List():
                 except rospy.exceptions.ROSException:
                     rospy.logwarn(f"Timeout of response /move_base/current_goal")
                     pass
-                # Try again handle
-                rospy.loginfo(f"Trying to send the goal again\t{n_try}/{max_try}")
         except Exception as e:
             rospy.logerr(f"An error occurs on create a new goal")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
-            
+
+    # Run all waypoints of the list    
+    def run_waypoint_list(self, max_wait_to_reached = 600):
+        # Run this topic to all waypoints in list
+        wp_n_rows = self.wp_list.get_n_rows()
+        for wp_n in range(1, wp_n_rows):
+            rospy.loginfo(f"Setting the waypoint {wp_n}/{wp_n_rows}")
+            wp = self.wp_list.get_row(row=wp_n)
+            self.new_goal(goal=wp)
+
+            try:
+                while True:
+                    move_base_status = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
+                    if move_base_status.status_list.status == 1:
+                        delta_time = move_base_status.header.stamp.secs - move_base_status.status_list.goal_id.stamp.secs
+                        if delta_time > max_wait_to_reached:
+                            raise TimeoutError('Goal reach timeout')
+                    elif move_base_status.status_list.status == 3:
+                        rospy.loginfo(f"Goal reached... Next goal")
+                        break
+                    else:
+                        rospy.logwarn(f"Status not reconized: {str(move_base_status.status_list)}")
+
+                    rospy.sleep(0.5)
+            except rospy.exceptions.ROSException:
+                rospy.logerr(f"Timeout of /move_base/status... Finalising tasks")
+                break
+            except TimeoutError:
+                rospy.logerr(f"Timeout to reach the goal... Next goal")
+                continue
+        rospy.loginfo(f"End of waypoints")
 
         
     # Callback function for the 'move_base/current_goal' topic
