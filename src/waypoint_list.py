@@ -36,6 +36,14 @@ class ReadCSV():
             rospy.logerr(f"Error to get the row {str(row)}")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
+    def get_rows(self):
+        try:
+            # Get the rows array
+            rows = self.df.iloc
+            return rows
+        except Exception as e:
+            rospy.logerr("An exception occurred:", type(e).__name__,e.args)
+            return False
     # Get the number of waypoints
     def get_n_row(self)->int:
         try:
