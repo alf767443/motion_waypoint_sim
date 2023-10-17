@@ -8,6 +8,7 @@ from waypoint_list import ReadCSV
 # Import messages
 from move_base_msgs.msg import *
 from geometry_msgs.msg import *
+from std_msgs.msg import *
 
 # Import the waypoint_list.csv and convert.
 class ReadCSV_Waypoint_List():
@@ -31,8 +32,10 @@ class ReadCSV_Waypoint_List():
             rospy.logdebug(f"Try to convert the dict\n{str(input)}\nto a MoveBaseActionGoal message")
             # Create the MoveBaseActionGoal message
             output = MoveBaseActionGoal()
+            output.goal = MoveBaseGoal()
             output.goal.target_pose = PoseStamped()
-            # Target frame of reference, by default are 'map'
+            output.goal.target_pose.header = Header()
+            # Preencha o campo 'header' do objetivo
             output.goal.target_pose.header.frame_id = "map"
             # Coordinates of the target position (x, y, z)
             output.goal.target_pose.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
@@ -62,6 +65,7 @@ class ReadCSV_Waypoint_List():
             rospy.logdebug(f"Publishing to the publisher_move_base_goal a new goal")
             # Try to send goal to the /move_base/goal
             self.publisher_move_base_goal.publish(goal)
+            
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
