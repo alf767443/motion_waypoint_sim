@@ -17,11 +17,11 @@ class ReadCSV_Waypoint_List():
     def __init__(self):
         rospy.init_node('waypoint_manager')
         # Subscribe to the 'move_base/current_goal' topic
-        # rospy.Subscriber('/move_base/current_goal', PoseStamped, self.move_base_current_goal_callback)
+        rospy.Subscriber('/move_base/current_goal', PoseStamped, self.check_current_goal)
 
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
-        
+        self.current_goal_is_seted, self.current_goal_pose = False, None
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
 
@@ -46,7 +46,6 @@ class ReadCSV_Waypoint_List():
             rospy.logerr(f"Erro on the dict convert to MoveBaseActionGoal goal")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
-
     # Get goal from list with the wp_list class
     def get_goal_from_list(self, order:int):
         try:
@@ -58,17 +57,32 @@ class ReadCSV_Waypoint_List():
             rospy.logerr(f"Error on get item {str(order)} from the csv list")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
-    
-    # Send a goal to the topic /move_base/goal
+    # Send a goal to the topic /move_base_simple/goal
     def send_goal2topic(self, goal:type):
         try:
             rospy.logdebug(f"Publishing to the publisher_move_base_goal a new goal")
-            # Try to send goal to the /move_base/goal
+            # Try to send goal to the  /move_base_simple/goal
             self.publisher_move_base_goal.publish(goal)
+            # Set the global current_goal
+            self.current_goal_is_seted, self.current_goal_pose = False, goal
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
         
+
+    # Callback function for the 'move_base/current_goal' topic
+    def check_current_goal(self, msg):
+        rospy.logdebug(f"{msg}")
+        msg_pose = msg.pose
+        # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
+        if self.current_goal_pose == msg_pose:
+            rospy.logdebug(f"The goal correspond")
+            self.current_goal_is_seted = True
+        else:
+            rospy.logwarn(f"The goal responded to isn't the one submitted")
+            self.current_goal_is_seted = False
+
+
     # Create a new goal from a goal dict
     def new_goal(self, goal:dict, max_try=10):
         try:
@@ -80,21 +94,35 @@ class ReadCSV_Waypoint_List():
                 goal_msg = self.pose_csv_dict2msg(input=goal)
                 # Send goal to the /move_base/goal topic
                 self.send_goal2topic(goal=goal_msg)
-                try:
-                    # Wait for the response goal
-                    msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=5)
-                    print(f"{msg}")
-                    # Check if the goal is correct
-                    if goal_msg.pose == msg.pose:
+
+                # Wait for move_base/current_goal... Timeout in 5 seconds
+                for i in range(1, 50):
+                    if self.current_goal_is_seted:
                         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
                         return True
-                    # Not same goal handle
-                    else:
-                        rospy.logwarn(f"The goal responded to isn't the one submitted")
+                    rospy.sleep(0.1)
+                rospy.logwarn(f"Timeout of response /move_base/current_goal")
+                
+
+
+                # try:
+                #     # Wait for the response goal
+                #     # msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=5)
+                #     # print(f"{msg}")
+                    
+                #     return False
+
+                #     # Check if the goal is correct
+                #     if goal_msg.pose == msg.pose:
+                #         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
+                #         return True
+                #     # Not same goal handle
+                #     else:
+                #         rospy.logwarn(f"The goal responded to isn't the one submitted")
                 # Timeout handle
-                except rospy.exceptions.ROSException:
-                    rospy.logwarn(f"Timeout of response /move_base/current_goal")
-                    pass
+                # except rospy.exceptions.ROSException:
+                #     rospy.logwarn(f"Timeout of response /move_base/current_goal")
+                    # pass
         except Exception as e:
             rospy.logerr(f"An error occurs on create a new goal")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
@@ -130,12 +158,6 @@ class ReadCSV_Waypoint_List():
                 continue
         rospy.loginfo(f"End of waypoints")
 
-        
-    # Callback function for the 'move_base/current_goal' topic
-    def move_base_current_goal_callback(self, msg):
-        self.current_goal = msg.pose.position
-        print(f"{str(msg)}")
-
 
 if __name__ == '__main__':
     try:
@@ -143,3 +165,4 @@ if __name__ == '__main__':
         ReadCSV_Waypoint_List()
     except rospy.ROSInterruptException:
         pass
+
