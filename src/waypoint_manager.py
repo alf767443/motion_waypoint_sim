@@ -87,8 +87,8 @@ class ReadCSV_Waypoint_List():
     def new_goal(self, goal:dict, max_try=10):
         try:
             # Try for a max of 10 times send the goal
-            for n_try in range(1,max_try):
-                rospy.loginfo(f"Trying to send the goal\t{n_try}/{max_try}")
+            for n_try in range(max_try):
+                rospy.loginfo(f"Trying to send the goal\t{n_try+1}/{max_try}")
                 rospy.logdebug(f"Creating a new goal from a dict")
                 # Convert goal to MoveBaseActionGoal
                 goal_msg = self.pose_csv_dict2msg(input=goal)
@@ -96,7 +96,7 @@ class ReadCSV_Waypoint_List():
                 self.send_goal2topic(goal=goal_msg)
 
                 # Wait for move_base/current_goal... Timeout in 5 seconds
-                for i in range(1, 50):
+                for i in range(50):
                     if self.current_goal_is_seted:
                         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
                         return True
