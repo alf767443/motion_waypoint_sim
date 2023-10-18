@@ -21,7 +21,8 @@ class ReadCSV_Waypoint_List():
 
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
-        self.current_goal_is_seted, self.current_goal_pose = False, None
+        # Define the variables of control the goal
+        self.current_goal_is_seted, self.current_goal_PoseStamped = False, None
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
 
@@ -66,7 +67,8 @@ class ReadCSV_Waypoint_List():
             # Try to send goal to the  /move_base_simple/goal
             self.publisher_move_base_goal.publish(goal)
             # Set the global current_goal
-            self.current_goal_is_seted, self.current_goal_pose = False, goal.pose
+            self.current_goal_is_seted, self.current_goal_PoseStamped = False, goal
+
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
@@ -74,11 +76,10 @@ class ReadCSV_Waypoint_List():
     # Callback function for the 'move_base/current_goal' topic
     def check_current_goal(self, msg):
         rospy.logdebug(f"{msg}")
-        msg_pose = msg.pose
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
-        if self.current_goal_pose == msg_pose:
+        if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
-            self.current_goal_is_seted = True
+            self.current_goal_is_seted, self.current_goal_PoseStamped = True, msg
         else:
             rospy.logwarn(f"The goal responded to isn't the one submitted")
             self.current_goal_is_seted = False
@@ -115,10 +116,14 @@ class ReadCSV_Waypoint_List():
         wp_n_rows = self.wp_list.get_n_rows()
         for wp_n in range(wp_n_rows):
             rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
+            # Get the way point of the row
             wp = self.wp_list.get_row(row=wp_n)
+            # Create the new goal from wp
             self.new_goal(goal=wp)
+            # Wait for the goal_rechead
             try:
                 while True:
+
                     move_base_status = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
                     if move_base_status.status_list.status == 1:
                         delta_time = move_base_status.header.stamp.secs - move_base_status.status_list.goal_id.stamp.secs
