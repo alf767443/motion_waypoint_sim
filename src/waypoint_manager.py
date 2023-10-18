@@ -98,7 +98,7 @@ class ReadCSV_Waypoint_List():
                 # Wait for move_base/current_goal... Timeout in 5 seconds
                 for i in range(50):
                     if self.current_goal_is_seted:
-                        rospy.loginfo(f"A new goal is define to \n{str(goal)}")
+                        rospy.loginfo(f"A new goal is define like:\n{str(self.current_goal_PoseStamped)}")
                         return True
                     rospy.sleep(0.1)
                 rospy.logwarn(f"Timeout of response /move_base/current_goal")
