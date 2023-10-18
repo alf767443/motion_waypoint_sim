@@ -119,7 +119,9 @@ class ReadCSV_Waypoint_List():
             # Get the way point of the row
             wp = self.wp_list.get_row(row=wp_n)
             # Create the new goal from wp
-            self.new_goal(goal=wp)
+            if not self.new_goal(goal=wp):
+                rospy.logwarn(f"Error to set the goal... Next goal")
+                continue
             # Wait for the goal_rechead
             try:
                 while True:
