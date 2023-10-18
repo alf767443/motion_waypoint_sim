@@ -64,7 +64,7 @@ class ReadCSV_Waypoint_List():
             # Try to send goal to the  /move_base_simple/goal
             self.publisher_move_base_goal.publish(goal)
             # Set the global current_goal
-            self.current_goal_is_seted, self.current_goal_pose = False, goal
+            self.current_goal_is_seted, self.current_goal_pose = False, goal.pose
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
