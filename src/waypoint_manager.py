@@ -46,6 +46,7 @@ class ReadCSV_Waypoint_List():
             rospy.logerr(f"Erro on the dict convert to MoveBaseActionGoal goal")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
+    
     # Get goal from list with the wp_list class
     def get_goal_from_list(self, order:int):
         try:
@@ -57,6 +58,7 @@ class ReadCSV_Waypoint_List():
             rospy.logerr(f"Error on get item {str(order)} from the csv list")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
+    
     # Send a goal to the topic /move_base_simple/goal
     def send_goal2topic(self, goal:type):
         try:
@@ -68,8 +70,7 @@ class ReadCSV_Waypoint_List():
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
-        
-
+    
     # Callback function for the 'move_base/current_goal' topic
     def check_current_goal(self, msg):
         rospy.logdebug(f"{msg}")
@@ -82,7 +83,6 @@ class ReadCSV_Waypoint_List():
             rospy.logwarn(f"The goal responded to isn't the one submitted")
             self.current_goal_is_seted = False
 
-
     # Create a new goal from a goal dict
     def new_goal(self, goal:dict, max_try=10):
         try:
@@ -94,7 +94,6 @@ class ReadCSV_Waypoint_List():
                 goal_msg = self.pose_csv_dict2msg(input=goal)
                 # Send goal to the /move_base/goal topic
                 self.send_goal2topic(goal=goal_msg)
-
                 # Wait for move_base/current_goal... Timeout in 5 seconds
                 for i in range(50):
                     if self.current_goal_is_seted:
@@ -102,38 +101,20 @@ class ReadCSV_Waypoint_List():
                         return True
                     rospy.sleep(0.1)
                 rospy.logwarn(f"Timeout of response /move_base/current_goal")
-                
-
-
-                # try:
-                #     # Wait for the response goal
-                #     # msg = rospy.wait_for_message('/move_base/current_goal', PoseStamped, timeout=5)
-                #     # print(f"{msg}")
-                    
-                #     return False
-
-                #     # Check if the goal is correct
-                #     if goal_msg.pose == msg.pose:
-                #         rospy.loginfo(f"A new goal is define to \n {str(goal)}")
-                #         return True
-                #     # Not same goal handle
-                #     else:
-                #         rospy.logwarn(f"The goal responded to isn't the one submitted")
-                # Timeout handle
-                # except rospy.exceptions.ROSException:
-                #     rospy.logwarn(f"Timeout of response /move_base/current_goal")
-                    # pass
         except Exception as e:
             rospy.logerr(f"An error occurs on create a new goal")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
+
+
+
     # Run all waypoints of the list    
     def run_waypoint_list(self, max_wait_to_reached = 600):
         # Run this topic to all waypoints in list
         wp_n_rows = self.wp_list.get_n_rows()
-        for wp_n in range(1, wp_n_rows):
-            rospy.loginfo(f"Setting the waypoint {wp_n}/{wp_n_rows}")
+        for wp_n in range(wp_n_rows):
+            rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
             wp = self.wp_list.get_row(row=wp_n)
             self.new_goal(goal=wp)
             try:
