@@ -26,7 +26,7 @@ class ReadCSV_Waypoint_List():
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
 
-        self.new_goal(self.get_goal_from_list(order=1))
+        self.run_waypoint_list()
 
         rospy.spin()
 
