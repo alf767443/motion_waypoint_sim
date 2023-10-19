@@ -84,7 +84,7 @@ class ReadCSV_Waypoint_List():
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
-            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_delta_time = True, msg, None, 0
+            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_delta_time, self.current_goal_seq = True, msg, None, 0, msg.header.seq
         else:
             rospy.logwarn(f"The goal responded to isn't the one submitted")
             self.current_goal_is_seted = False
