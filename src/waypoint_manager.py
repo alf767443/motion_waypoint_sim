@@ -123,6 +123,7 @@ class ReadCSV_Waypoint_List():
         return False
 
     def check_status(self):
+        # Switch case for the status
         with self.current_goal_status as status:
             if status == None:
                 return True 
@@ -181,60 +182,15 @@ class ReadCSV_Waypoint_List():
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
                         raise AttributeError("Error to set the goal")
 
-                    while True:
-                        
-
-
-                    try:
-                        move_base_result = None
-                        move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=5)
-                    except:
-                        pass
-                    print(move_base_result)
-                    print(f"-----------------------------\n{self.current_goal_status}\n-----------------------------")
-
-                    # Handle the message
-                    
-
-
-                    # if move_base_result.status_list[0].status == 1:
-                    #     delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
-                    #     # print(delta_time)
-                    #     if delta_time > max_wait_to_reached:
-                    #         raise TimeoutError('Goal reach timeout')    
-                    #     # print('asdas')
-                    # elif move_base_result.status_list[0].status == 3:
-                    #     rospy.loginfo(f"Goal reached... Next goal")
-                    #     break
-                    # else:
-                    #     rospy.logdebug(f"Status not reconized: {str(move_base_result.status_list[0])}")
-
-                    # # Wait for the result message
-                    # for j in range(MAX_TRY):
-                    #     move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
-                    #     # move_base_result = False
-                    #     # print(move_base_result)
-                    #     # If the message is not about the last waypoint sent ignore it
-                    #     if not move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
-                    #         # If try for a MAX_TRY, raise a exeption
-                    #         if j == MAX_TRY - 1:
-                    #             raise rospy.exceptions.ROSException
-                    #         # Else continue
-                    #         else:
-                    #             continue
-                    #     # Else break the wait and handle the message
-                    #     else:
-                    #         break
-                    
+                    while self.check_status():
+                        if self.current_goal_delta_time > max_wait_to_reached:
+                            raise TimeoutError("Goal reach timeout")
+                        rospy.sleep()
                     
                 # Other errors
-                except AssertionError as e:
+                except (AssertionError, TimeoutError) as e:
                     rospy.logwarn(f"{e}... Try again {i+1}/{MAX_TRY}")
                     continue
-                # Timeout error
-                except rospy.exceptions.ROSException:
-                    rospy.logwarn(f"Goal reach timeout... Try again {i+1}/{MAX_TRY}")
-                    continue 
                 # Erros that continue to next goal
                 except AttributeError as e:
                     rospy.logerr(f"{e}")
