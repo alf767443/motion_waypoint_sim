@@ -19,8 +19,8 @@ class ReadCSV_Waypoint_List():
         rospy.Rate(0.2)
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.check_current_goal, queue_size=1)
-
-        rospy.Subscriber('/move_base/status', GoalStatusArray, self.check_result, queue_size=1)
+        # Subscribe to the 'move_base/status' topic
+        rospy.Subscriber('/move_base/status', GoalStatusArray, self.check_status, queue_size=1)
 
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
@@ -79,7 +79,6 @@ class ReadCSV_Waypoint_List():
     # Callback function for the 'move_base/current_goal' topic
     def check_current_goal(self, msg):
         rospy.logdebug(f"{msg}")
-        print(f"------------------------------\n{msg}\n---------------------------")
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
@@ -112,14 +111,14 @@ class ReadCSV_Waypoint_List():
             return False
 
     # Check the result of the 'move_base/result' topic
-    def check_result(self, msg):
-        status_encontrado = None
+    def check_status(self, msg):
+        # Check for all values of array to seq number
         for dicionario in msg.status_list:
             if f"-{self.current_goal_seq}-" in dicionario.goal_id.id:
-                status_encontrado = dicionario.status
-                break
-        print(status_encontrado)
-        return True
+                # Get status value
+                self.current_goal_status = dicionario.status
+                return True
+        return False
 
 
     # Run all waypoints of the list    
