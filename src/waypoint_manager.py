@@ -99,7 +99,7 @@ class ReadCSV_Waypoint_List():
                 # Send goal to the /move_base/goal topic
                 self.send_goal2topic(goal=goal_msg)
                 # Wait for move_base/current_goal... Timeout in 5 seconds
-                for i in range(50):
+                for _ in range(50):
                     if self.current_goal_is_seted:
                         rospy.loginfo(f"A new goal is define like:\n{str(self.current_goal_PoseStamped)}")
                         return True
@@ -180,8 +180,7 @@ class ReadCSV_Waypoint_List():
                     wp = self.wp_list.get_row(row=wp_n)
                     # Create the new goal from wp, else go to next goal
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
-                        # raise AttributeError("Error to set the goal")
-                        pass
+                        raise AttributeError("Error to set the goal")
 
                     while self.check_status():
                         if self.current_goal_delta_time > max_wait_to_reached:
