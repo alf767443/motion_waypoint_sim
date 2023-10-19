@@ -78,6 +78,7 @@ class ReadCSV_Waypoint_List():
     # Callback function for the 'move_base/current_goal' topic
     def check_current_goal(self, msg):
         rospy.logdebug(f"{msg}")
+        print(f"------------------------------\n{msg}\n---------------------------")
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
