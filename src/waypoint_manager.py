@@ -135,8 +135,10 @@ class ReadCSV_Waypoint_List():
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
                         raise AttributeError("Error to set the goal")
 
-
-                    move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=60)
+                    try:
+                        move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=60)
+                    except:
+                        pass
                     # print(move_base_result)
 
                     # Handle the message
