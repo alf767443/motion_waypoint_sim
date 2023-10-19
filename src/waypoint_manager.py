@@ -138,17 +138,61 @@ class ReadCSV_Waypoint_List():
 
                     move_base_result = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
                     print(move_base_result)
-                    if move_base_result.status_list[0].status == 1:
-                        delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
-                        print(delta_time)
-                        if delta_time > max_wait_to_reached:
-                            raise TimeoutError('Goal reach timeout')    
-                        print('asdas')
-                    elif move_base_result.status_list[0].status == 3:
-                        rospy.loginfo(f"Goal reached... Next goal")
-                        break
-                    else:
-                        rospy.logdebug(f"Status not reconized: {str(move_base_result.status_list[0])}")
+
+                    # Handle the message
+                    with self.current_goal_status as status:
+                        # PENDING=0
+                        if status == 0:
+                            i -= 1
+                            continue
+                        # ACTIVE=1
+                        elif status == 1:
+                            continue
+                        # PREEMPTED=2
+                        elif status == 2:
+                            i -= 1
+                            continue
+                        # SUCCEEDED=3 -> Go to next waypoint
+                        elif status == 3:
+                            break
+                        # ABORTED=4
+                        elif status == 4:
+                            raise AssertionError("The goal is aborted")
+                        # REJECTED=5
+                        elif status == 5:
+                            raise AssertionError("The goal is rejected")
+                        # PREEMPTING=6
+                        elif status == 6:
+                            i -= 1
+                            continue
+                        # RECALLING=7
+                        elif status == 7:
+                            raise AssertionError("The goal is recalling")
+                        # RECALLED=8
+                        elif status == 8:
+                            i -= 1
+                            continue
+                        # LOST=9
+                        elif status == 9:
+                            raise AssertionError("The goal is lost")
+                        # No match
+                        else:
+                            i -= 1
+                            continue
+
+
+
+                    # if move_base_result.status_list[0].status == 1:
+                    #     delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
+                    #     print(delta_time)
+                    #     if delta_time > max_wait_to_reached:
+                    #         raise TimeoutError('Goal reach timeout')    
+                    #     print('asdas')
+                    # elif move_base_result.status_list[0].status == 3:
+                    #     rospy.loginfo(f"Goal reached... Next goal")
+                    #     break
+                    # else:
+                    #     rospy.logdebug(f"Status not reconized: {str(move_base_result.status_list[0])}")
 
                     # # Wait for the result message
                     # for j in range(MAX_TRY):
@@ -167,42 +211,7 @@ class ReadCSV_Waypoint_List():
                     #     else:
                     #         break
                     
-                    # Handle the message
-                    # with move_base_result.status.status as status:
-                    #     # PENDING=0
-                    #     if status == 0:
-                    #         i -= 1
-                    #         continue
-                    #     # ACTIVE=1
-                    #     elif status == 1:
-                    #         continue
-                    #     # PREEMPTED=2
-                    #     elif status == 2:
-                    #         i -= 1
-                    #         continue
-                    #     # SUCCEEDED=3 -> Go to next waypoint
-                    #     elif status == 3:
-                    #         break
-                    #     # ABORTED=4
-                    #     elif status == 4:
-                    #         raise AssertionError("The goal is aborted")
-                    #     # REJECTED=5
-                    #     elif status == 5:
-                    #         raise AssertionError("The goal is rejected")
-                    #     # PREEMPTING=6
-                    #     elif status == 6:
-                    #         i -= 1
-                    #         continue
-                    #     # RECALLING=7
-                    #     elif status == 7:
-                    #         raise AssertionError("The goal is recalling")
-                    #     # RECALLED=8
-                    #     elif status == 8:
-                    #         i -= 1
-                    #         continue
-                    #     # LOST=9
-                    #     elif status == 9:
-                    #         raise AssertionError("The goal is lost")
+                    
                 # Other errors
                 except AssertionError as e:
                     rospy.logwarn(f"{e}... Try again {i+1}/{MAX_TRY}")
