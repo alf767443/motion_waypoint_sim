@@ -24,7 +24,7 @@ class ReadCSV_Waypoint_List():
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
         # Define the variables of control the goal
-        self.current_goal_is_seted, self.current_goal_PoseStamped = False, None
+        self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status = False, None, None
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
 
@@ -109,9 +109,14 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
-    
+    # Check the result of the 'move_base/result' topic
     def check_result(self, msg):
-        print(msg)
+        move_base_result = msg
+        if move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
+            self.current_goal_status = move_base_result.status.status
+            return True
+        else:
+            return False
 
 
     # Run all waypoints of the list    
@@ -134,59 +139,72 @@ class ReadCSV_Waypoint_List():
                         raise AttributeError("Error to set the goal")
 
 
-                    # Wait for the result message
-                    for j in range(MAX_TRY):
-                        # move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
-                        move_base_result = False
-                        print(move_base_result)
-                        # If the message is not about the last waypoint sent ignore it
-                        if not move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
-                            # If try for a MAX_TRY, raise a exeption
-                            if j == MAX_TRY - 1:
-                                raise rospy.exceptions.ROSException
-                            # Else continue
-                            else:
-                                continue
-                        # Else break the wait and handle the message
-                        else:
-                            break
+                    move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=2)
+                    print(move_base_result)
+                    if move_base_result.status_list[0].status == 1:
+                        delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
+                        if delta_time > max_wait_to_reached:
+                            raise TimeoutError('Goal reach timeout')
+                        print('asdas')
+                    elif move_base_result.status_list[0].status == 3:
+                        rospy.loginfo(f"Goal reached... Next goal")
+                        break
+                    else:
+                        rospy.logdebug(f"Status not reconized: {str(move_base_result.status_list[0])}")
+                        
+                    # # Wait for the result message
+                    # for j in range(MAX_TRY):
+                    #     move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
+                    #     # move_base_result = False
+                    #     print(move_base_result)
+                    #     # If the message is not about the last waypoint sent ignore it
+                    #     if not move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
+                    #         # If try for a MAX_TRY, raise a exeption
+                    #         if j == MAX_TRY - 1:
+                    #             raise rospy.exceptions.ROSException
+                    #         # Else continue
+                    #         else:
+                    #             continue
+                    #     # Else break the wait and handle the message
+                    #     else:
+                    #         break
                     
                     # Handle the message
-                    with move_base_result.status.status as status:
-                        # PENDING=0
-                        if status == 0:
-                            i -= 1
-                            continue
-                        # ACTIVE=1
-                        elif status == 1:
-                            continue
-                        # PREEMPTED=2
-                        elif status == 2:
-                            i -= 1
-                            continue
-                        # SUCCEEDED=3 -> Go to next waypoint
-                        elif status == 3:
-                            break
-                        # ABORTED=4
-                        elif status == 4:
-                            raise AssertionError("The goal is aborted")
-                        # REJECTED=5
-                        elif status == 5:
-                            raise AssertionError("The goal is rejected")
-                        # PREEMPTING=6
-                        elif status == 6:
-                            i -= 1
-                            continue
-                        # RECALLING=7
-                        elif status == 7:
-                            raise AssertionError("The goal is recalling")
-                        # RECALLED=8
-                        elif status == 8:
-                            i -= 1
-                            continue
-                        # LOST=9
-                        elif status == 9:
-                            raise AssertionError("The goal is lost")
+                    # with move_base_result.status.status as status:
+                    #     # PENDING=0
+                    #     if status == 0:
+                    #         i -= 1
+                    #         continue
+                    #     # ACTIVE=1
+                    #     elif status == 1:
+                    #         continue
+                    #     # PREEMPTED=2
+                    #     elif status == 2:
+                    #         i -= 1
+                    #         continue
+                    #     # SUCCEEDED=3 -> Go to next waypoint
+                    #     elif status == 3:
+                    #         break
+                    #     # ABORTED=4
+                    #     elif status == 4:
+                    #         raise AssertionError("The goal is aborted")
+                    #     # REJECTED=5
+                    #     elif status == 5:
+                    #         raise AssertionError("The goal is rejected")
+                    #     # PREEMPTING=6
+                    #     elif status == 6:
+                    #         i -= 1
+                    #         continue
+                    #     # RECALLING=7
+                    #     elif status == 7:
+                    #         raise AssertionError("The goal is recalling")
+                    #     # RECALLED=8
+                    #     elif status == 8:
+                    #         i -= 1
+                    #         continue
+                    #     # LOST=9
+                    #     elif status == 9:
+                    #         raise AssertionError("The goal is lost")
                 # Other errors
                 except AssertionError as e:
                     rospy.logwarn(f"{e}... Try again {i}/{MAX_TRY}")
