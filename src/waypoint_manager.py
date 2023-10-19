@@ -16,7 +16,7 @@ class ReadCSV_Waypoint_List():
     # Init the ROS node
     def __init__(self):
         rospy.init_node('waypoint_manager')
-        rospy.Rate(2)
+        rospy.Rate(0.2)
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.check_current_goal)
 
