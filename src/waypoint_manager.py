@@ -114,6 +114,7 @@ class ReadCSV_Waypoint_List():
         move_base_result = msg
         print(f"+++++++++++++++++++++++++++++\n{msg}\n+++++++++++++++++++++++++++++")
         self.current_goal_status = move_base_result.status_list[-1].status
+        print(self.current_goal_status)
         return True
 
 
