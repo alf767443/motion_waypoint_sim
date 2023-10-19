@@ -112,6 +112,7 @@ class ReadCSV_Waypoint_List():
     # Check the result of the 'move_base/result' topic
     def check_result(self, msg):
         move_base_result = msg
+        print(f"+++++++++++++++++++++++++++++\n{msg}\n+++++++++++++++++++++++++++++")
         self.current_goal_status = move_base_result.status_list[-1].status
         return True
 
