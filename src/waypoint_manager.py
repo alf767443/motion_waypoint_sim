@@ -180,7 +180,8 @@ class ReadCSV_Waypoint_List():
                     wp = self.wp_list.get_row(row=wp_n)
                     # Create the new goal from wp, else go to next goal
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
-                        raise AttributeError("Error to set the goal")
+                        # raise AttributeError("Error to set the goal")
+                        pass
 
                     while self.check_status():
                         if self.current_goal_delta_time > max_wait_to_reached:
@@ -193,7 +194,7 @@ class ReadCSV_Waypoint_List():
                     continue
                 # Erros that continue to next goal
                 except AttributeError as e:
-                    rospy.logwarn(f"{e}")
+                    rospy.logerr(f"{e}")
                     break
             rospy.loginfo(f"Next goal")
             wp_n += 1
