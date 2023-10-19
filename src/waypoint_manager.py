@@ -20,6 +20,9 @@ class ReadCSV_Waypoint_List():
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.callback_move_base_current_goal, queue_size=1)
         # Subscribe to the 'move_base/status' topic
         rospy.Subscriber('/move_base/status', GoalStatusArray, self.callback_move_base_status, queue_size=1)
+        # Subscribe to the 'move_base/goal' topic
+        rospy.Subscriber('/move_base/goal', PoseStamped, self.callback_move_base_goal, queue_size=1)
+
 
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
@@ -44,7 +47,6 @@ class ReadCSV_Waypoint_List():
             output.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
             # Orientation (quaternion) of the target position (x, y, z, w)
             output.pose.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
-            print(f"The message converted is {str(output)}")
             return output
         except Exception as e:
             rospy.logerr(f"Erro on the dict convert to PoseStamped goal")
@@ -82,11 +84,29 @@ class ReadCSV_Waypoint_List():
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
-            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq, self.current_goal_delta_time = True, msg, None, msg.header.seq, 0
+            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_delta_time = True, msg, None, 0
         else:
             rospy.logwarn(f"The goal responded to isn't the one submitted")
             self.current_goal_is_seted = False
 
+    # Check the result of the 'move_base/status' topic
+    def callback_move_base_status(self, msg):
+        # Check for all values of array to seq number
+        for status in msg.status_list:
+            if f"-{self.current_goal_seq}-" in status.goal_id.id:
+                # Get status value
+                self.current_goal_status = status.status
+                # Get the delta time
+                self.current_goal_delta_time = msg.header.stamp.secs - status.goal_id.stamp.secs
+                return True
+        return False
+
+    # Check the result of the 'move_base/goal' topic
+    def callback_move_base_status(self, msg):
+        # Check for all values of array to seq number
+        self.current_goal_seq = msg.header.seq
+        return True
+        
     # Create a new goal from a goal dict
     def new_goal(self, goal:dict, max_try=10):
         try:
@@ -110,18 +130,7 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
-    # Check the result of the 'move_base/status' topic
-    def callback_move_base_status(self, msg):
-        # Check for all values of array to seq number
-        for status in msg.status_list:
-            if f"-{self.current_goal_seq}-" in status.goal_id.id:
-                # Get status value
-                self.current_goal_status = status.status
-                # Get the delta time
-                self.current_goal_delta_time = msg.header.stamp.secs - status.goal_id.stamp.secs
-                return True
-        return False
-
+    
     def check_status(self):
         # Switch case for the status
         status = self.current_goal_status
