@@ -19,6 +19,8 @@ class ReadCSV_Waypoint_List():
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.check_current_goal)
 
+        rospy.Subscriber('/move_base/result', MoveBaseActionResult, self.check_result)
+
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
         # Define the variables of control the goal
@@ -107,6 +109,10 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
+    
+    def check_result(self, msg):
+        print(msg)
+
 
     # Run all waypoints of the list    
     def run_waypoint_list(self, max_wait_to_reached = 600):
@@ -126,6 +132,8 @@ class ReadCSV_Waypoint_List():
                     # Create the new goal from wp, else go to next goal
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
                         raise AttributeError("Error to set the goal")
+
+
                     # Wait for the result message
                     for j in range(MAX_TRY):
                         move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
