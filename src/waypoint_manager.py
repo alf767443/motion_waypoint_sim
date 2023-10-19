@@ -113,7 +113,7 @@ class ReadCSV_Waypoint_List():
 
     # Check the result of the 'move_base/result' topic
     def check_result(self, msg):
-
+        status_encontrado = None
         for dicionario in msg.status_list:
             if f"-{self.current_goal_seq}-" in dicionario.goal_id.id:
                 status_encontrado = dicionario.status
