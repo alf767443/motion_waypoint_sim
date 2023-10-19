@@ -105,6 +105,7 @@ class ReadCSV_Waypoint_List():
     def callback_move_base_goal(self, msg):
         # Check for all values of array to seq number
         self.current_goal_seq = msg.header.seq
+        print(self.current_goal_seq)
         return True
         
     # Create a new goal from a goal dict
