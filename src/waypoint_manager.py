@@ -18,9 +18,9 @@ class ReadCSV_Waypoint_List():
         rospy.init_node('waypoint_manager')
         rospy.Rate(0.2)
         # Subscribe to the 'move_base/current_goal' topic
-        rospy.Subscriber('/move_base/current_goal', PoseStamped, self.check_current_goal, queue_size=1)
+        rospy.Subscriber('/move_base/current_goal', PoseStamped, self.callback_move_base_current_goal, queue_size=1)
         # Subscribe to the 'move_base/status' topic
-        rospy.Subscriber('/move_base/status', GoalStatusArray, self.check_status, queue_size=1)
+        rospy.Subscriber('/move_base/status', GoalStatusArray, self.callback_move_base_status, queue_size=1)
 
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
@@ -77,7 +77,7 @@ class ReadCSV_Waypoint_List():
             return False
     
     # Callback function for the 'move_base/current_goal' topic
-    def check_current_goal(self, msg):
+    def callback_move_base_current_goal(self, msg):
         rospy.logdebug(f"{msg}")
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
@@ -110,8 +110,8 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
-    # Check the result of the 'move_base/result' topic
-    def check_status(self, msg):
+    # Check the result of the 'move_base/status' topic
+    def callback_move_base_status(self, msg):
         # Check for all values of array to seq number
         for status in msg.status_list:
             if f"-{self.current_goal_seq}-" in status.goal_id.id:
@@ -121,6 +121,45 @@ class ReadCSV_Waypoint_List():
                 self.current_goal_delta_time = msg.header.stamp.secs - status.goal_id.secs
                 return True
         return False
+
+    def check_status(self):
+        with self.current_goal_status as status:
+            if status == None:
+                return True 
+            # PENDING=0
+            if status == 0:
+                return True
+            # ACTIVE=1
+            elif status == 1:
+                return True
+            # PREEMPTED=2
+            elif status == 2:
+                return True
+            # SUCCEEDED=3 -> Go to next waypoint
+            elif status == 3:
+                return False
+            # ABORTED=4
+            elif status == 4:
+                raise AssertionError("The goal is aborted")
+            # REJECTED=5
+            elif status == 5:
+                raise AssertionError("The goal is rejected")
+            # PREEMPTING=6
+            elif status == 6:
+                return True
+            # RECALLING=7
+            elif status == 7:
+                raise AssertionError("The goal is recalling")
+            # RECALLED=8
+            elif status == 8:
+                return True
+            # LOST=9
+            elif status == 9:
+                raise AssertionError("The goal is lost")
+            # No match
+            else:
+                rospy.logwarn(f"The goal status isn't mapped")
+                return True
 
 
     # Run all waypoints of the list    
@@ -142,6 +181,10 @@ class ReadCSV_Waypoint_List():
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
                         raise AttributeError("Error to set the goal")
 
+                    while True:
+                        
+
+
                     try:
                         move_base_result = None
                         move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=5)
@@ -151,47 +194,7 @@ class ReadCSV_Waypoint_List():
                     print(f"-----------------------------\n{self.current_goal_status}\n-----------------------------")
 
                     # Handle the message
-                    with self.current_goal_status as status:
-                        print(status)
-                        # PENDING=0
-                        if status == 0:
-                            i -= 1
-                            continue
-                        # ACTIVE=1
-                        elif status == 1:
-                            continue
-                        # PREEMPTED=2
-                        elif status == 2:
-                            i -= 1
-                            continue
-                        # SUCCEEDED=3 -> Go to next waypoint
-                        elif status == 3:
-                            break
-                        # ABORTED=4
-                        elif status == 4:
-                            raise AssertionError("The goal is aborted")
-                        # REJECTED=5
-                        elif status == 5:
-                            raise AssertionError("The goal is rejected")
-                        # PREEMPTING=6
-                        elif status == 6:
-                            i -= 1
-                            continue
-                        # RECALLING=7
-                        elif status == 7:
-                            raise AssertionError("The goal is recalling")
-                        # RECALLED=8
-                        elif status == 8:
-                            i -= 1
-                            continue
-                        # LOST=9
-                        elif status == 9:
-                            raise AssertionError("The goal is lost")
-                        # No match
-                        else:
-                            i -= 1
-                            continue
-
+                    
 
 
                     # if move_base_result.status_list[0].status == 1:
