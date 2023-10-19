@@ -19,7 +19,7 @@ class ReadCSV_Waypoint_List():
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.check_current_goal)
 
-        rospy.Subscriber('/move_base/result', MoveBaseActionResult, self.check_result)
+        rospy.Subscriber('/move_base/result', MoveBaseActionFeedback, self.check_result)
 
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
@@ -69,7 +69,7 @@ class ReadCSV_Waypoint_List():
             # Try to send goal to the  /move_base_simple/goal
             self.publisher_move_base_goal.publish(goal)
             # Set the global current_goal
-            self.current_goal_is_seted, self.current_goal_PoseStamped = False, goal
+            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status = False, goal, None
 
         except Exception as e:
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
@@ -112,11 +112,8 @@ class ReadCSV_Waypoint_List():
     # Check the result of the 'move_base/result' topic
     def check_result(self, msg):
         move_base_result = msg
-        if move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
-            self.current_goal_status = move_base_result.status.status
-            return True
-        else:
-            return False
+        self.current_goal_status = move_base_result.status_list[-1].status
+        return True
 
 
     # Run all waypoints of the list    
