@@ -16,7 +16,6 @@ class ReadCSV_Waypoint_List():
     # Init the ROS node
     def __init__(self):
         rospy.init_node('waypoint_manager')
-        rospy.Rate(0.2)
         # Subscribe to the 'move_base/current_goal' topic
         rospy.Subscriber('/move_base/current_goal', PoseStamped, self.callback_move_base_current_goal, queue_size=1)
         # Subscribe to the 'move_base/status' topic
@@ -185,7 +184,7 @@ class ReadCSV_Waypoint_List():
                     while self.check_status():
                         if self.current_goal_delta_time > max_wait_to_reached:
                             raise TimeoutError("Goal reach timeout")
-                        rospy.sleep()
+                        rospy.sleep(0.5)
                     
                 # Other errors
                 except (AssertionError, TimeoutError) as e:
