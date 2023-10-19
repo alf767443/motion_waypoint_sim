@@ -32,11 +32,11 @@ class ReadCSV_Waypoint_List():
 
         rospy.spin()
 
-    # This function converts the csv dictionary into a MoveBaseActionGoal message
+    # This function converts the csv dictionary into a PoseStamped message
     def pose_csv_dict2msg(self, input:dict):
         try:
-            rospy.logdebug(f"Try to convert the dict\n{str(input)}\nto a MoveBaseActionGoal message")
-            # Create the MoveBaseActionGoal message
+            rospy.logdebug(f"Try to convert the dict\n{str(input)}\nto a PoseStamped message")
+            # Create the PoseStamped message
             output = PoseStamped()
             # Preencha o campo 'header' do objetivo
             output.header.frame_id = 'map'
@@ -44,9 +44,10 @@ class ReadCSV_Waypoint_List():
             output.pose.position = Point(input.pos_x, input.pos_y, input.pos_z)
             # Orientation (quaternion) of the target position (x, y, z, w)
             output.pose.orientation = Quaternion(input.ori_x, input.ori_y, input.ori_z, input.ori_w)
+            rospy.logdebug(f"The message converted is {str(output)}")
             return output
         except Exception as e:
-            rospy.logerr(f"Erro on the dict convert to MoveBaseActionGoal goal")
+            rospy.logerr(f"Erro on the dict convert to PoseStamped goal")
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
     
@@ -93,7 +94,7 @@ class ReadCSV_Waypoint_List():
             for n_try in range(max_try):
                 rospy.loginfo(f"Trying to send the goal\t{n_try+1}/{max_try}")
                 rospy.logdebug(f"Creating a new goal from a dict")
-                # Convert goal to MoveBaseActionGoal
+                # Convert goal to PoseStamped
                 goal_msg = self.pose_csv_dict2msg(input=goal)
                 # Send goal to the /move_base/goal topic
                 self.send_goal2topic(goal=goal_msg)
