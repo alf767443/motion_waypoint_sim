@@ -29,7 +29,7 @@ class ReadCSV():
     def get_row(self, row:int):
         try:
             # Get the row value
-            value = self.df.iloc[row - 1]
+            value = self.df.iloc[row]
             rospy.logdebug(f"The value in row {str(row)} are:\n {str(value)}")
             return value
         except Exception as e:

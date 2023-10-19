@@ -114,6 +114,17 @@ class ReadCSV_Waypoint_List():
     def run_waypoint_list(self, max_wait_to_reached = 600):
         # Run this topic to all waypoints in list
         wp_n_rows = self.wp_list.get_n_rows()
+        wp_n = 0
+        while True:
+            rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
+            # Get the way point of the row
+            wp = self.wp_list.get_row(row=wp_n)
+            # Create the new goal from wp
+            if not self.new_goal(goal=wp):
+                rospy.logerr(f"Error to set the goal... Next goal")
+                continue
+            # Wait for the goal_rechead
+
         for wp_n in range(wp_n_rows):
             rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
             # Get the way point of the row
@@ -125,7 +136,7 @@ class ReadCSV_Waypoint_List():
             # Wait for the goal_rechead
             try:
                 while True:
-                    move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=2)
+                    move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
                     print(move_base_result)
                     if move_base_result.status_list[0].status == 1:
                         delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
@@ -140,8 +151,8 @@ class ReadCSV_Waypoint_List():
 
                     rospy.sleep(0.5)
             except rospy.exceptions.ROSException:
-                rospy.logerr(f"Timeout of /move_base/status... Finalising tasks")
-                break
+                rospy.logerr(f"Goal reach timeout")
+                continue
             except TimeoutError:
                 rospy.logerr(f"Timeout to reach the goal... Next goal")
                 continue
