@@ -139,7 +139,7 @@ class ReadCSV_Waypoint_List():
                         move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=5)
                     except:
                         pass
-                    # print(move_base_result)
+                    print(move_base_result)
 
                     # Handle the message
                     with self.current_goal_status as status:
