@@ -139,13 +139,13 @@ class ReadCSV_Waypoint_List():
                         raise AttributeError("Error to set the goal")
 
 
-                    move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=2)
+                    move_base_result = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
                     print(move_base_result)
                     if move_base_result.status_list[0].status == 1:
                         delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
                         print(delta_time)
                         if delta_time > max_wait_to_reached:
-                            raise TimeoutError('Goal reach timeout')
+                            raise TimeoutError('Goal reach timeout')    
                         print('asdas')
                     elif move_base_result.status_list[0].status == 3:
                         rospy.loginfo(f"Goal reached... Next goal")
@@ -208,11 +208,11 @@ class ReadCSV_Waypoint_List():
                     #         raise AssertionError("The goal is lost")
                 # Other errors
                 except AssertionError as e:
-                    rospy.logwarn(f"{e}... Try again {i}/{MAX_TRY}")
+                    rospy.logwarn(f"{e}... Try again {i+1}/{MAX_TRY}")
                     continue
                 # Timeout error
                 except rospy.exceptions.ROSException:
-                    rospy.logwarn(f"Goal reach timeout... Try again {i}/{MAX_TRY}")
+                    rospy.logwarn(f"Goal reach timeout... Try again {i+1}/{MAX_TRY}")
                     continue 
                 # Erros that continue to next goal
                 except AttributeError as e:
