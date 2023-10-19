@@ -124,43 +124,43 @@ class ReadCSV_Waypoint_List():
 
     def check_status(self):
         # Switch case for the status
-        with self.current_goal_status as status:
-            if status == None:
-                return True 
-            # PENDING=0
-            if status == 0:
-                return True
-            # ACTIVE=1
-            elif status == 1:
-                return True
-            # PREEMPTED=2
-            elif status == 2:
-                return True
-            # SUCCEEDED=3 -> Go to next waypoint
-            elif status == 3:
-                return False
-            # ABORTED=4
-            elif status == 4:
-                raise AssertionError("The goal is aborted")
-            # REJECTED=5
-            elif status == 5:
-                raise AssertionError("The goal is rejected")
-            # PREEMPTING=6
-            elif status == 6:
-                return True
-            # RECALLING=7
-            elif status == 7:
-                raise AssertionError("The goal is recalling")
-            # RECALLED=8
-            elif status == 8:
-                return True
-            # LOST=9
-            elif status == 9:
-                raise AssertionError("The goal is lost")
-            # No match
-            else:
-                rospy.logwarn(f"The goal status isn't mapped")
-                return True
+        status = self.current_goal_status
+        if status == None:
+            return True 
+        # PENDING=0
+        if status == 0:
+            return True
+        # ACTIVE=1
+        elif status == 1:
+            return True
+        # PREEMPTED=2
+        elif status == 2:
+            return True
+        # SUCCEEDED=3 -> Go to next waypoint
+        elif status == 3:
+            return False
+        # ABORTED=4
+        elif status == 4:
+            raise AssertionError("The goal is aborted")
+        # REJECTED=5
+        elif status == 5:
+            raise AssertionError("The goal is rejected")
+        # PREEMPTING=6
+        elif status == 6:
+            return True
+        # RECALLING=7
+        elif status == 7:
+            raise AssertionError("The goal is recalling")
+        # RECALLED=8
+        elif status == 8:
+            return True
+        # LOST=9
+        elif status == 9:
+            raise AssertionError("The goal is lost")
+        # No match
+        else:
+            rospy.logwarn(f"The goal status isn't mapped")
+            return True
 
 
     # Run all waypoints of the list    
@@ -180,8 +180,7 @@ class ReadCSV_Waypoint_List():
                     wp = self.wp_list.get_row(row=wp_n)
                     # Create the new goal from wp, else go to next goal
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
-                        # raise AttributeError("Error to set the goal")
-                        pass
+                        raise AttributeError("Error to set the goal")
 
                     while self.check_status():
                         if self.current_goal_delta_time > max_wait_to_reached:
@@ -193,9 +192,9 @@ class ReadCSV_Waypoint_List():
                     rospy.logwarn(f"{e}... Try again {i+1}/{MAX_TRY}")
                     continue
                 # Erros that continue to next goal
-                # except AttributeError as e:
-                #     rospy.logerr(f"{e}")
-                #     break
+                except AttributeError as e:
+                    rospy.logerr(f"{e}")
+                    break
             rospy.loginfo(f"Next goal")
             wp_n += 1
 
