@@ -130,7 +130,7 @@ class ReadCSV_Waypoint_List():
                     for j in range(MAX_TRY):
                         move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
                         # If the message is not about the last waypoint sent ignore it
-                        if not str(move_base_result.status.goal_id.id).startswith(f"/move_base-{self.current_goal_PoseStamped.header.seq}"):
+                        if not move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
                             # If try for a MAX_TRY, raise a exeption
                             if j == MAX_TRY - 1:
                                 raise rospy.exceptions.ROSException
