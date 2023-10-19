@@ -108,54 +108,90 @@ class ReadCSV_Waypoint_List():
             return False
 
 
-
-
     # Run all waypoints of the list    
     def run_waypoint_list(self, max_wait_to_reached = 600):
         # Run this topic to all waypoints in list
         wp_n_rows = self.wp_list.get_n_rows()
         wp_n = 0
-        while True:
-            rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
-            # Get the way point of the row
-            wp = self.wp_list.get_row(row=wp_n)
-            # Create the new goal from wp
-            if not self.new_goal(goal=wp):
-                rospy.logerr(f"Error to set the goal... Next goal")
-                continue
-            # Wait for the goal_rechead
+        MAX_TRY = 10
+        # Send all waypoints in the csv
+        while wp_n < wp_n_rows:
+            # Try for the waypoint for a max MAX_TRY try times
+            for i in range(MAX_TRY):   
+                try:
+                    # Settiing the waypoint wp_n from csv
+                    rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
+                    # Get the way point of the row
+                    wp = self.wp_list.get_row(row=wp_n)
+                    # Create the new goal from wp, else go to next goal
+                    if not self.new_goal(goal=wp, max_try=MAX_TRY):
+                        raise AttributeError("Error to set the goal")
+                    # Wait for the result message
+                    for j in range(MAX_TRY):
+                        move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
+                        # If the message is not about the last waypoint sent ignore it
+                        if not str(move_base_result.status.goal_id.id).startswith(f"/move_base-{self.current_goal_PoseStamped.header.seq}"):
+                            # If try for a MAX_TRY, raise a exeption
+                            if j == MAX_TRY - 1:
+                                raise rospy.exceptions.ROSException
+                            # Else continue
+                            else:
+                                continue
+                        # Else break the wait and handle the message
+                        else:
+                            break
+                    
+                    # Handle the message
+                    with move_base_result.status.status as status:
+                        # PENDING=0
+                        if status == 0:
+                            i -= 1
+                            continue
+                        # ACTIVE=1
+                        elif status == 1:
+                            continue
+                        # PREEMPTED=2
+                        elif status == 2:
+                            i -= 1
+                            continue
+                        # SUCCEEDED=3 -> Go to next waypoint
+                        elif status == 3:
+                            break
+                        # ABORTED=4
+                        elif status == 4:
+                            raise AssertionError("The goal is aborted")
+                        # REJECTED=5
+                        elif status == 5:
+                            raise AssertionError("The goal is rejected")
+                        # PREEMPTING=6
+                        elif status == 6:
+                            i -= 1
+                            continue
+                        # RECALLING=7
+                        elif status == 7:
+                            raise AssertionError("The goal is recalling")
+                        # RECALLED=8
+                        elif status == 8:
+                            i -= 1
+                            continue
+                        # LOST=9
+                        elif status == 9:
+                            raise AssertionError("The goal is lost")
+                # Other errors
+                except AssertionError as e:
+                    rospy.logwarn(f"{e}... Try again {i}/{MAX_TRY}")
+                    continue
+                # Timeout error
+                except rospy.exceptions.ROSException:
+                    rospy.logwarn(f"Goal reach timeout... Try again {i}/{MAX_TRY}")
+                    continue 
+                # Erros that continue to next goal
+                except AttributeError as e:
+                    rospy.logerr(f"{e}")
+                    break
+            rospy.loginfo(f"Next goal")
+            wp_n += 1
 
-        for wp_n in range(wp_n_rows):
-            rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
-            # Get the way point of the row
-            wp = self.wp_list.get_row(row=wp_n)
-            # Create the new goal from wp
-            if not self.new_goal(goal=wp):
-                rospy.logerr(f"Error to set the goal... Next goal")
-                continue
-            # Wait for the goal_rechead
-            try:
-                while True:
-                    move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
-                    print(move_base_result)
-                    if move_base_result.status_list[0].status == 1:
-                        delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
-                        if delta_time > max_wait_to_reached:
-                            raise TimeoutError('Goal reach timeout')
-                        print('asdas')
-                    elif move_base_result.status_list[0].status == 3:
-                        rospy.loginfo(f"Goal reached... Next goal")
-                        break
-                    else:
-                        rospy.logdebug(f"Status not reconized: {str(move_base_result.status_list[0])}")
-
-                    rospy.sleep(0.5)
-            except rospy.exceptions.ROSException:
-                rospy.logerr(f"Goal reach timeout")
-                continue
-            except TimeoutError:
-                rospy.logerr(f"Timeout to reach the goal... Next goal")
-                continue
         rospy.loginfo(f"End of waypoints")
 
 
