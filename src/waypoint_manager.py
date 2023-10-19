@@ -30,6 +30,7 @@ class ReadCSV_Waypoint_List():
 
         self.run_waypoint_list()
 
+        rospy.Rate(2)
         rospy.spin()
 
     # This function converts the csv dictionary into a MoveBaseActionGoal message
