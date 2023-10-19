@@ -17,11 +17,11 @@ class ReadCSV_Waypoint_List():
     def __init__(self):
         rospy.init_node('waypoint_manager')
         # Subscribe to the 'move_base/current_goal' topic
-        rospy.Subscriber('/move_base/current_goal', PoseStamped, self.callback_move_base_current_goal, queue_size=1)
+        rospy.Subscriber('/move_base/current_goal', PoseStamped, self.callback_move_base_current_goal, queue_size=10)
         # Subscribe to the 'move_base/status' topic
-        rospy.Subscriber('/move_base/status', GoalStatusArray, self.callback_move_base_status, queue_size=1)
+        rospy.Subscriber('/move_base/status', GoalStatusArray, self.callback_move_base_status, queue_size=10)
         # Subscribe to the 'move_base/goal' topic
-        rospy.Subscriber('/move_base/goal', PoseStamped, self.callback_move_base_goal, queue_size=1)
+        rospy.Subscriber('/move_base/goal', PoseStamped, self.callback_move_base_goal, queue_size=10)
 
 
         # Create a publisher to send a goal        
