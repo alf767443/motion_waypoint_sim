@@ -24,7 +24,7 @@ class ReadCSV_Waypoint_List():
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
         # Define the variables of control the goal
-        self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status = False, None, None
+        self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq = False, None, None, None
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
 
@@ -83,7 +83,7 @@ class ReadCSV_Waypoint_List():
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
-            self.current_goal_is_seted, self.current_goal_PoseStamped = True, msg
+            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq = True, msg, None, msg.header.seq
         else:
             rospy.logwarn(f"The goal responded to isn't the one submitted")
             self.current_goal_is_seted = False
@@ -113,10 +113,9 @@ class ReadCSV_Waypoint_List():
 
     # Check the result of the 'move_base/result' topic
     def check_result(self, msg):
-        move_base_result = msg
-        print(f"+++++++++++++++++++++++++++++\n{msg}\n+++++++++++++++++++++++++++++")
-        self.current_goal_status = move_base_result.status_list[-1].status
-        print(self.current_goal_status)
+        df = pd.DataFrame(msg.status_list)
+        result = df[df["goal_id"]["id"].str.contains(f"-{self.current_goal_seq}-")]
+        print(result)
         return True
 
 
