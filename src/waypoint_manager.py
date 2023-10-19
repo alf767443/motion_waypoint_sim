@@ -143,6 +143,7 @@ class ReadCSV_Waypoint_List():
                     print(move_base_result)
                     if move_base_result.status_list[0].status == 1:
                         delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
+                        print(delta_time)
                         if delta_time > max_wait_to_reached:
                             raise TimeoutError('Goal reach timeout')
                         print('asdas')
@@ -151,7 +152,7 @@ class ReadCSV_Waypoint_List():
                         break
                     else:
                         rospy.logdebug(f"Status not reconized: {str(move_base_result.status_list[0])}")
-                        
+
                     # # Wait for the result message
                     # for j in range(MAX_TRY):
                     #     move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
