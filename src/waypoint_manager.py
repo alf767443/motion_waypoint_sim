@@ -136,10 +136,12 @@ class ReadCSV_Waypoint_List():
                         raise AttributeError("Error to set the goal")
 
                     try:
+                        move_base_result = None
                         move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=5)
                     except:
                         pass
                     print(move_base_result)
+                    print(f"-----------------------------\n{self.current_goal_status}\n-----------------------------")
 
                     # Handle the message
                     with self.current_goal_status as status:
