@@ -193,9 +193,9 @@ class ReadCSV_Waypoint_List():
                     rospy.logwarn(f"{e}... Try again {i+1}/{MAX_TRY}")
                     continue
                 # Erros that continue to next goal
-                except AttributeError as e:
-                    rospy.logerr(f"{e}")
-                    break
+                # except AttributeError as e:
+                #     rospy.logerr(f"{e}")
+                #     break
             rospy.loginfo(f"Next goal")
             wp_n += 1
 
