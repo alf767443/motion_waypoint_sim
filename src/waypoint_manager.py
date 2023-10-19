@@ -136,11 +136,12 @@ class ReadCSV_Waypoint_List():
                         raise AttributeError("Error to set the goal")
 
 
-                    move_base_result = rospy.wait_for_message('/move_base/status', GoalStatusArray, timeout=2)
-                    print(move_base_result)
+                    move_base_result = rospy.wait_for_message('/move_base/result', MoveBaseActionResult, timeout=60)
+                    # print(move_base_result)
 
                     # Handle the message
                     with self.current_goal_status as status:
+                        print(status)
                         # PENDING=0
                         if status == 0:
                             i -= 1
@@ -184,10 +185,10 @@ class ReadCSV_Waypoint_List():
 
                     # if move_base_result.status_list[0].status == 1:
                     #     delta_time = move_base_result.header.stamp.secs - move_base_result.status_list[0].goal_id.stamp.secs
-                    #     print(delta_time)
+                    #     # print(delta_time)
                     #     if delta_time > max_wait_to_reached:
                     #         raise TimeoutError('Goal reach timeout')    
-                    #     print('asdas')
+                    #     # print('asdas')
                     # elif move_base_result.status_list[0].status == 3:
                     #     rospy.loginfo(f"Goal reached... Next goal")
                     #     break
@@ -198,7 +199,7 @@ class ReadCSV_Waypoint_List():
                     # for j in range(MAX_TRY):
                     #     move_base_result = rospy.wait_for_message('/move_base/result', GoalStatusArray, timeout=6000)
                     #     # move_base_result = False
-                    #     print(move_base_result)
+                    #     # print(move_base_result)
                     #     # If the message is not about the last waypoint sent ignore it
                     #     if not move_base_result.header.seq == self.current_goal_PoseStamped.header.seq:
                     #         # If try for a MAX_TRY, raise a exeption
