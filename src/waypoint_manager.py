@@ -118,7 +118,7 @@ class ReadCSV_Waypoint_List():
                 # Get status value
                 self.current_goal_status = status.status
                 # Get the delta time
-                self.current_goal_delta_time = msg.header.stamp.secs - status.goal_id.secs
+                self.current_goal_delta_time = msg.header.stamp.secs - status.goal_id.stamp.secs
                 return True
         return False
 
