@@ -128,7 +128,7 @@ class ReadCSV_Waypoint_List():
             for i in range(MAX_TRY):   
                 try:
                     # Settiing the waypoint wp_n from csv
-                    rospy.loginfo(f"Setting the waypoint {wp_n+1}/{wp_n_rows}")
+                    rospy.loginfo(f"Setting the waypoint goal {wp_n+1}/{wp_n_rows}")
                     # Get the way point of the row
                     wp = self.wp_list.get_row(row=wp_n)
                     # Create the new goal from wp, else go to next goal
