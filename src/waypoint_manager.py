@@ -102,7 +102,7 @@ class ReadCSV_Waypoint_List():
         return False
 
     # Check the result of the 'move_base/goal' topic
-    def callback_move_base_status(self, msg):
+    def callback_move_base_goal(self, msg):
         # Check for all values of array to seq number
         self.current_goal_seq = msg.header.seq
         return True
