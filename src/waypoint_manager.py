@@ -113,9 +113,12 @@ class ReadCSV_Waypoint_List():
 
     # Check the result of the 'move_base/result' topic
     def check_result(self, msg):
-        df = pd.DataFrame(msg.status_list)
-        result = df[df["goal_id"]["id"].str.contains(f"-{self.current_goal_seq}-")]
-        print(result)
+
+        for dicionario in msg.status_list:
+            if f"-{self.current_goal_seq}-" in dicionario.goal_id.id:
+                status_encontrado = dicionario.status
+                break
+        print(status_encontrado)
         return True
 
 
