@@ -25,7 +25,7 @@ class ReadCSV_Waypoint_List():
         # Create a publisher to send a goal        
         self.publisher_move_base_goal = rospy.Publisher("/move_base_simple/goal", PoseStamped, queue_size=10)
         # Define the variables of control the goal
-        self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq = False, None, None, None
+        self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq, self.current_goal_delta_time = False, None, None, None, None
         #Read the csv waypoint_list
         self.wp_list = ReadCSV() 
 
@@ -82,7 +82,7 @@ class ReadCSV_Waypoint_List():
         # Check if the current_goal of move_base is the equal to the current_goal of motion_waypoint_sim
         if self.current_goal_PoseStamped.pose == msg.pose:
             rospy.logdebug(f"The goal correspond")
-            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq = True, msg, None, msg.header.seq
+            self.current_goal_is_seted, self.current_goal_PoseStamped, self.current_goal_status, self.current_goal_seq, self.current_goal_delta_time = True, msg, None, msg.header.seq, 0
         else:
             rospy.logwarn(f"The goal responded to isn't the one submitted")
             self.current_goal_is_seted = False
@@ -113,10 +113,12 @@ class ReadCSV_Waypoint_List():
     # Check the result of the 'move_base/result' topic
     def check_status(self, msg):
         # Check for all values of array to seq number
-        for dicionario in msg.status_list:
-            if f"-{self.current_goal_seq}-" in dicionario.goal_id.id:
+        for status in msg.status_list:
+            if f"-{self.current_goal_seq}-" in status.goal_id.id:
                 # Get status value
-                self.current_goal_status = dicionario.status
+                self.current_goal_status = status.status
+                # Get the delta time
+                self.current_goal_delta_time = msg.header.stamp.secs - status.goal_id.secs
                 return True
         return False
 
