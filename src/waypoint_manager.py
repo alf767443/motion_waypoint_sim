@@ -200,6 +200,7 @@ class ReadCSV_Waypoint_List():
                         if self.current_goal_delta_time > max_wait_to_reached:
                             raise TimeoutError("Goal reach timeout")
                         rospy.sleep(0.5)
+                    break
                     
                 # Other errors
                 except (AssertionError, TimeoutError) as e:
