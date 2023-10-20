@@ -195,13 +195,14 @@ class ReadCSV_Waypoint_List():
                     # Create the new goal from wp, else go to next goal
                     if not self.new_goal(goal=wp, max_try=MAX_TRY):
                         raise AttributeError("Error to set the goal")
-
+                    # Wait to the goal is reached
                     while self.check_status():
                         if self.current_goal_delta_time > max_wait_to_reached:
                             raise TimeoutError("Goal reach timeout")
                         rospy.sleep(0.5)
+                    # Success to reached
+                    rospy.loginfo(f"The goal {wp_n} was reached")
                     break
-                    
                 # Other errors
                 except (AssertionError, TimeoutError) as e:
                     rospy.logwarn(f"{e}... Try again {i+1}/{MAX_TRY}")
