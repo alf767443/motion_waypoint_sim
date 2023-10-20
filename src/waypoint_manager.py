@@ -11,7 +11,7 @@ from geometry_msgs.msg import *
 from std_msgs.msg import *
 from actionlib_msgs.msg import *
 
-# Import the waypoint_list.csv and convert.
+# Run the waypoints in the csv list
 class ReadCSV_Waypoint_List():
     # Init the ROS node
     def __init__(self):
@@ -135,7 +135,7 @@ class ReadCSV_Waypoint_List():
             rospy.logerr("An exception occurred:", type(e).__name__,e.args)
             return False
 
-    
+    # Check the status and return a bool or an Error
     def check_status(self):
         # Switch case for the status
         status = self.current_goal_status
@@ -176,7 +176,6 @@ class ReadCSV_Waypoint_List():
             rospy.logwarn(f"The goal status isn't mapped")
             return True
 
-
     # Run all waypoints of the list    
     def run_waypoint_list(self, max_wait_to_reached = 600):
         # Run this topic to all waypoints in list
@@ -211,11 +210,10 @@ class ReadCSV_Waypoint_List():
                 except AttributeError as e:
                     rospy.logerr(f"{e}")
                     break
-            rospy.loginfo(f"Next goal")
+            if wp_n < wp_n_rows:
+                rospy.loginfo(f"Next goal")
             wp_n += 1
-
         rospy.loginfo(f"End of waypoints")
-
 
 if __name__ == '__main__':
     try:
