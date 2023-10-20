@@ -91,6 +91,9 @@ class ReadCSV_Waypoint_List():
 
     # Check the result of the 'move_base/status' topic
     def callback_move_base_status(self, msg):
+        # Check if have a current_goal_seq
+        if not type(self.current_goal_seq) is int:
+            return False    
         # Check for all values of array to seq number
         for status in msg.status_list:
             # Search for the goal_id that match with current_goal_seq+1
