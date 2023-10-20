@@ -93,7 +93,8 @@ class ReadCSV_Waypoint_List():
     def callback_move_base_status(self, msg):
         # Check for all values of array to seq number
         for status in msg.status_list:
-            if f"-{self.current_goal_seq}-" in status.goal_id.id:
+            # Search for the goal_id that match with current_goal_seq+1
+            if f"-{self.current_goal_seq+1}-" in status.goal_id.id:
                 # Get status value
                 self.current_goal_status = status.status
                 # Get the delta time
