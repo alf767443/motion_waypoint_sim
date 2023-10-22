@@ -1,0 +1,726 @@
+    # /amcl_pose
+    {
+        'topic'   : '/amcl_pose',
+        'msg'     : geometry_msgs/PoseWithCovarianceStamped,
+        'sleep'   : 0.2
+    },
+    # /camera/camera_info
+    {
+        'topic'   : '/camera/camera_info',
+        'msg'     : sensor_msgs/CameraInfo,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw
+    {
+        'topic'   : '/camera/image_raw',
+        'msg'     : sensor_msgs/Image,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/compressed
+    {
+        'topic'   : '/camera/image_raw/compressed',
+        'msg'     : sensor_msgs/CompressedImage,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/compressed/parameter_descriptions
+    {
+        'topic'   : '/camera/image_raw/compressed/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/compressed/parameter_updates
+    {
+        'topic'   : '/camera/image_raw/compressed/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/compressedDepth
+    {
+        'topic'   : '/camera/image_raw/compressedDepth',
+        'msg'     : sensor_msgs/CompressedImage,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/compressedDepth/parameter_descriptions
+    {
+        'topic'   : '/camera/image_raw/compressedDepth/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/compressedDepth/parameter_updates
+    {
+        'topic'   : '/camera/image_raw/compressedDepth/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/theora
+    {
+        'topic'   : '/camera/image_raw/theora',
+        'msg'     : theora_image_transport/Packet,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/theora/parameter_descriptions
+    {
+        'topic'   : '/camera/image_raw/theora/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/image_raw/theora/parameter_updates
+    {
+        'topic'   : '/camera/image_raw/theora/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/parameter_descriptions
+    {
+        'topic'   : '/camera/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/parameter_updates
+    {
+        'topic'   : '/camera/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/camera_info
+    {
+        'topic'   : '/camera/realsense/color/camera_info',
+        'msg'     : sensor_msgs/CameraInfo,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw
+    {
+        'topic'   : '/camera/realsense/color/image_raw',
+        'msg'     : sensor_msgs/Image,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/compressed
+    {
+        'topic'   : '/camera/realsense/color/image_raw/compressed',
+        'msg'     : sensor_msgs/CompressedImage,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/compressed/parameter_descriptions
+    {
+        'topic'   : '/camera/realsense/color/image_raw/compressed/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/compressed/parameter_updates
+    {
+        'topic'   : '/camera/realsense/color/image_raw/compressed/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/compressedDepth
+    {
+        'topic'   : '/camera/realsense/color/image_raw/compressedDepth',
+        'msg'     : sensor_msgs/CompressedImage,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/compressedDepth/parameter_descriptions
+    {
+        'topic'   : '/camera/realsense/color/image_raw/compressedDepth/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/compressedDepth/parameter_updates
+    {
+        'topic'   : '/camera/realsense/color/image_raw/compressedDepth/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/theora
+    {
+        'topic'   : '/camera/realsense/color/image_raw/theora',
+        'msg'     : theora_image_transport/Packet,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/theora/parameter_descriptions
+    {
+        'topic'   : '/camera/realsense/color/image_raw/theora/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/color/image_raw/theora/parameter_updates
+    {
+        'topic'   : '/camera/realsense/color/image_raw/theora/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/depth/camera_info
+    {
+        'topic'   : '/camera/realsense/depth/camera_info',
+        'msg'     : sensor_msgs/CameraInfo,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/depth/color/points
+    {
+        'topic'   : '/camera/realsense/depth/color/points',
+        'msg'     : sensor_msgs/PointCloud2,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/depth/image_rect_raw
+    {
+        'topic'   : '/camera/realsense/depth/image_rect_raw',
+        'msg'     : sensor_msgs/Image,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/parameter_descriptions
+    {
+        'topic'   : '/camera/realsense/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /camera/realsense/parameter_updates
+    {
+        'topic'   : '/camera/realsense/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /clicked_point
+    {
+        'topic'   : '/clicked_point',
+        'msg'     : geometry_msgs/PointStamped,
+        'sleep'   : 0.2
+    },
+    # /clock
+    {
+        'topic'   : '/clock',
+        'msg'     : rosgraph_msgs/Clock,
+        'sleep'   : 0.2
+    },
+    # /cmd_vel
+    {
+        'topic'   : '/cmd_vel',
+        'msg'     : geometry_msgs/Twist,
+        'sleep'   : 0.2
+    },
+    # /diagnostics
+    {
+        'topic'   : '/diagnostics',
+        'msg'     : diagnostic_msgs/DiagnosticArray,
+        'sleep'   : 0.2
+    },
+    # /e_stop
+    {
+        'topic'   : '/e_stop',
+        'msg'     : std_msgs/Bool,
+        'sleep'   : 0.2
+    },
+    # /gazebo/link_states
+    {
+        'topic'   : '/gazebo/link_states',
+        'msg'     : gazebo_msgs/LinkStates,
+        'sleep'   : 0.2
+    },
+    # /gazebo/model_states
+    {
+        'topic'   : '/gazebo/model_states',
+        'msg'     : gazebo_msgs/ModelStates,
+        'sleep'   : 0.2
+    },
+    # /gazebo/parameter_descriptions
+    {
+        'topic'   : '/gazebo/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /gazebo/parameter_updates
+    {
+        'topic'   : '/gazebo/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /gazebo/performance_metrics
+    {
+        'topic'   : '/gazebo/performance_metrics',
+        'msg'     : gazebo_msgs/PerformanceMetrics,
+        'sleep'   : 0.2
+    },
+    # /gazebo/set_link_state
+    {
+        'topic'   : '/gazebo/set_link_state',
+        'msg'     : gazebo_msgs/LinkState,
+        'sleep'   : 0.2
+    },
+    # /gazebo/set_model_state
+    {
+        'topic'   : '/gazebo/set_model_state',
+        'msg'     : gazebo_msgs/ModelState,
+        'sleep'   : 0.2
+    },
+    # /husky_velocity_controller/cmd_vel
+    {
+        'topic'   : '/husky_velocity_controller/cmd_vel',
+        'msg'     : geometry_msgs/Twist,
+        'sleep'   : 0.2
+    },
+    # /husky_velocity_controller/odom
+    {
+        'topic'   : '/husky_velocity_controller/odom',
+        'msg'     : nav_msgs/Odometry,
+        'sleep'   : 0.2
+    },
+    # /husky_velocity_controller/parameter_descriptions
+    {
+        'topic'   : '/husky_velocity_controller/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /husky_velocity_controller/parameter_updates
+    {
+        'topic'   : '/husky_velocity_controller/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /imu/data
+    {
+        'topic'   : '/imu/data',
+        'msg'     : sensor_msgs/Imu,
+        'sleep'   : 0.2
+    },
+    # /imu/data/accel/parameter_descriptions
+    {
+        'topic'   : '/imu/data/accel/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /imu/data/accel/parameter_updates
+    {
+        'topic'   : '/imu/data/accel/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /imu/data/bias
+    {
+        'topic'   : '/imu/data/bias',
+        'msg'     : sensor_msgs/Imu,
+        'sleep'   : 0.2
+    },
+    # /imu/data/rate/parameter_descriptions
+    {
+        'topic'   : '/imu/data/rate/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /imu/data/rate/parameter_updates
+    {
+        'topic'   : '/imu/data/rate/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /imu/data/yaw/parameter_descriptions
+    {
+        'topic'   : '/imu/data/yaw/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /imu/data/yaw/parameter_updates
+    {
+        'topic'   : '/imu/data/yaw/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /initialpose
+    {
+        'topic'   : '/initialpose',
+        'msg'     : geometry_msgs/PoseWithCovarianceStamped,
+        'sleep'   : 0.2
+    },
+    # /joint_states
+    {
+        'topic'   : '/joint_states',
+        'msg'     : sensor_msgs/JointState,
+        'sleep'   : 0.2
+    },
+    # /joy_teleop/cmd_vel
+    {
+        'topic'   : '/joy_teleop/cmd_vel',
+        'msg'     : geometry_msgs/Twist,
+        'sleep'   : 0.2
+    },
+    # /joy_teleop/joy
+    {
+        'topic'   : '/joy_teleop/joy',
+        'msg'     : sensor_msgs/Joy,
+        'sleep'   : 0.2
+    },
+    # /joy_teleop/joy/set_feedback
+    {
+        'topic'   : '/joy_teleop/joy/set_feedback',
+        'msg'     : sensor_msgs/JoyFeedbackArray,
+        'sleep'   : 0.2
+    },
+    # /lidar/particle_cloud
+    {
+        'topic'   : '/lidar/particle_cloud',
+        'msg'     : sensor_msgs/PointCloud2,
+        'sleep'   : 0.2
+    },
+    # /map
+    {
+        'topic'   : '/map',
+        'msg'     : nav_msgs/OccupancyGrid,
+        'sleep'   : 0.2
+    },
+    # /map_metadata
+    {
+        'topic'   : '/map_metadata',
+        'msg'     : nav_msgs/MapMetaData,
+        'sleep'   : 0.2
+    },
+    # /map_updates
+    {
+        'topic'   : '/map_updates',
+        'msg'     : map_msgs/OccupancyGridUpdate,
+        'sleep'   : 0.2
+    },
+    # /move_base/DWAPlannerROS/cost_cloud
+    {
+        'topic'   : '/move_base/DWAPlannerROS/cost_cloud',
+        'msg'     : sensor_msgs/PointCloud2,
+        'sleep'   : 0.2
+    },
+    # /move_base/DWAPlannerROS/global_plan
+    {
+        'topic'   : '/move_base/DWAPlannerROS/global_plan',
+        'msg'     : nav_msgs/Path,
+        'sleep'   : 0.2
+    },
+    # /move_base/DWAPlannerROS/local_plan
+    {
+        'topic'   : '/move_base/DWAPlannerROS/local_plan',
+        'msg'     : nav_msgs/Path,
+        'sleep'   : 0.2
+    },
+    # /move_base/DWAPlannerROS/parameter_descriptions
+    {
+        'topic'   : '/move_base/DWAPlannerROS/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/DWAPlannerROS/parameter_updates
+    {
+        'topic'   : '/move_base/DWAPlannerROS/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/DWAPlannerROS/trajectory_cloud
+    {
+        'topic'   : '/move_base/DWAPlannerROS/trajectory_cloud',
+        'msg'     : sensor_msgs/PointCloud2,
+        'sleep'   : 0.2
+    },
+    # /move_base/GraphPlanner/expand
+    {
+        'topic'   : '/move_base/GraphPlanner/expand',
+        'msg'     : nav_msgs/OccupancyGrid,
+        'sleep'   : 0.2
+    },
+    # /move_base/GraphPlanner/plan
+    {
+        'topic'   : '/move_base/GraphPlanner/plan',
+        'msg'     : nav_msgs/Path,
+        'sleep'   : 0.2
+    },
+    # /move_base/cancel
+    {
+        'topic'   : '/move_base/cancel',
+        'msg'     : actionlib_msgs/GoalID,
+        'sleep'   : 0.2
+    },
+    # /move_base/current_goal
+    {
+        'topic'   : '/move_base/current_goal',
+        'msg'     : geometry_msgs/PoseStamped,
+        'sleep'   : 0.2
+    },
+    # /move_base/feedback
+    {
+        'topic'   : '/move_base/feedback',
+        'msg'     : move_base_msgs/MoveBaseActionFeedback,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/costmap
+    {
+        'topic'   : '/move_base/global_costmap/costmap',
+        'msg'     : nav_msgs/OccupancyGrid,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/costmap_updates
+    {
+        'topic'   : '/move_base/global_costmap/costmap_updates',
+        'msg'     : map_msgs/OccupancyGridUpdate,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/footprint
+    {
+        'topic'   : '/move_base/global_costmap/footprint',
+        'msg'     : geometry_msgs/PolygonStamped,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/inflation/parameter_descriptions
+    {
+        'topic'   : '/move_base/global_costmap/inflation/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/inflation/parameter_updates
+    {
+        'topic'   : '/move_base/global_costmap/inflation/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/parameter_descriptions
+    {
+        'topic'   : '/move_base/global_costmap/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/parameter_updates
+    {
+        'topic'   : '/move_base/global_costmap/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/static/parameter_descriptions
+    {
+        'topic'   : '/move_base/global_costmap/static/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/global_costmap/static/parameter_updates
+    {
+        'topic'   : '/move_base/global_costmap/static/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/goal
+    {
+        'topic'   : '/move_base/goal',
+        'msg'     : move_base_msgs/MoveBaseActionGoal,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/costmap
+    {
+        'topic'   : '/move_base/local_costmap/costmap',
+        'msg'     : nav_msgs/OccupancyGrid,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/costmap_updates
+    {
+        'topic'   : '/move_base/local_costmap/costmap_updates',
+        'msg'     : map_msgs/OccupancyGridUpdate,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/footprint
+    {
+        'topic'   : '/move_base/local_costmap/footprint',
+        'msg'     : geometry_msgs/PolygonStamped,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/inflation/parameter_descriptions
+    {
+        'topic'   : '/move_base/local_costmap/inflation/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/inflation/parameter_updates
+    {
+        'topic'   : '/move_base/local_costmap/inflation/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/obstacles_laser/parameter_descriptions
+    {
+        'topic'   : '/move_base/local_costmap/obstacles_laser/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/obstacles_laser/parameter_updates
+    {
+        'topic'   : '/move_base/local_costmap/obstacles_laser/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/parameter_descriptions
+    {
+        'topic'   : '/move_base/local_costmap/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/local_costmap/parameter_updates
+    {
+        'topic'   : '/move_base/local_costmap/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/parameter_descriptions
+    {
+        'topic'   : '/move_base/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /move_base/parameter_updates
+    {
+        'topic'   : '/move_base/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /move_base/recovery_status
+    {
+        'topic'   : '/move_base/recovery_status',
+        'msg'     : move_base_msgs/RecoveryStatus,
+        'sleep'   : 0.2
+    },
+    # /move_base/result
+    {
+        'topic'   : '/move_base/result',
+        'msg'     : move_base_msgs/MoveBaseActionResult,
+        'sleep'   : 0.2
+    },
+    # /move_base/status
+    {
+        'topic'   : '/move_base/status',
+        'msg'     : actionlib_msgs/GoalStatusArray,
+        'sleep'   : 0.2
+    },
+    # /move_base_simple/goal
+    {
+        'topic'   : '/move_base_simple/goal',
+        'msg'     : geometry_msgs/PoseStamped,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix
+    {
+        'topic'   : '/navsat/fix',
+        'msg'     : sensor_msgs/NavSatFix,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix/position/parameter_descriptions
+    {
+        'topic'   : '/navsat/fix/position/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix/position/parameter_updates
+    {
+        'topic'   : '/navsat/fix/position/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix/status/parameter_descriptions
+    {
+        'topic'   : '/navsat/fix/status/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix/status/parameter_updates
+    {
+        'topic'   : '/navsat/fix/status/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix/velocity/parameter_descriptions
+    {
+        'topic'   : '/navsat/fix/velocity/parameter_descriptions',
+        'msg'     : dynamic_reconfigure/ConfigDescription,
+        'sleep'   : 0.2
+    },
+    # /navsat/fix/velocity/parameter_updates
+    {
+        'topic'   : '/navsat/fix/velocity/parameter_updates',
+        'msg'     : dynamic_reconfigure/Config,
+        'sleep'   : 0.2
+    },
+    # /navsat/vel
+    {
+        'topic'   : '/navsat/vel',
+        'msg'     : geometry_msgs/Vector3Stamped,
+        'sleep'   : 0.2
+    },
+    # /odom
+    {
+        'topic'   : '/odom',
+        'msg'     : nav_msgs/Odometry,
+        'sleep'   : 0.2
+    },
+    # /odometry/filtered
+    {
+        'topic'   : '/odometry/filtered',
+        'msg'     : nav_msgs/Odometry,
+        'sleep'   : 0.2
+    },
+    # /particlecloud
+    {
+        'topic'   : '/particlecloud',
+        'msg'     : geometry_msgs/PoseArray,
+        'sleep'   : 0.2
+    },
+    # /rosout
+    {
+        'topic'   : '/rosout',
+        'msg'     : rosgraph_msgs/Log,
+        'sleep'   : 0.2
+    },
+    # /rosout_agg
+    {
+        'topic'   : '/rosout_agg',
+        'msg'     : rosgraph_msgs/Log,
+        'sleep'   : 0.2
+    },
+    # /scan
+    {
+        'topic'   : '/scan',
+        'msg'     : sensor_msgs/LaserScan,
+        'sleep'   : 0.2
+    },
+    # /set_pose
+    {
+        'topic'   : '/set_pose',
+        'msg'     : geometry_msgs/PoseWithCovarianceStamped,
+        'sleep'   : 0.2
+    },
+    # /slam_gmapping/entropy
+    {
+        'topic'   : '/slam_gmapping/entropy',
+        'msg'     : std_msgs/Float64,
+        'sleep'   : 0.2
+    },
+    # /tf
+    {
+        'topic'   : '/tf',
+        'msg'     : tf2_msgs/TFMessage,
+        'sleep'   : 0.2
+    },
+    # /tf_static
+    {
+        'topic'   : '/tf_static',
+        'msg'     : tf2_msgs/TFMessage,
+        'sleep'   : 0.2
+    },
+    # /twist_marker_server/cmd_vel
+    {
+        'topic'   : '/twist_marker_server/cmd_vel',
+        'msg'     : geometry_msgs/Twist,
+        'sleep'   : 0.2
+    },
+    # /twist_marker_server/feedback
+    {
+        'topic'   : '/twist_marker_server/feedback',
+        'msg'     : visualization_msgs/InteractiveMarkerFeedback,
+        'sleep'   : 0.2
+    },
+    # /twist_marker_server/update
+    {
+        'topic'   : '/twist_marker_server/update',
+        'msg'     : visualization_msgs/InteractiveMarkerUpdate,
+        'sleep'   : 0.2
+    },
+    # /twist_marker_server/update_full
+    {
+        'topic'   : '/twist_marker_server/update_full',
+        'msg'     : visualization_msgs/InteractiveMarkerInit,
+        'sleep'   : 0.2
+    },
